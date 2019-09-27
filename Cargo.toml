@@ -1,0 +1,12 @@
+[package]
+name = "what_are_the_odds"
+version = "0.1.0"
+authors = ["Jean-Benoit Griesner <griesner@telecom-paristech.fr>"]
+edition = "2018"
+
+[dependencies]
+rocket = "0.4.2"
+rusqlite = "*"
+petgraph = "0.4.13"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
