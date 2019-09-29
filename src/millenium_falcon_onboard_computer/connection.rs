@@ -8,6 +8,23 @@ use serde_json::Result as jsonResult;
 use rusqlite::{Connection,NO_PARAMS};
 use rusqlite::Result as sqliteResult;
 
+pub fn read_data<P, D>(path: P) -> jsonResult<D>
+where
+    P: AsRef<Path>,
+    for<'de> D: Deserialize<'de>
+{
+    let file = File::open(path).unwrap();
+    let reader = BufReader::new(file);
+    let f = serde_json::from_reader(reader)?;
+    Ok(f)
+}
+
+#[derive(Deserialize, Debug)]
+pub struct EmpireData {
+    pub countdown: u32,
+    pub bounty_hunters: Vec<PlanetDanger>,
+}
+
 #[derive(Deserialize, Debug)]
 pub struct FalconData {
     pub autonomy: u32,
@@ -16,15 +33,10 @@ pub struct FalconData {
     pub routes_db: String,
 }
 
-fn from_universe_data() -> u32 {
-    5
-}
-
-pub fn read_falcon_data<P: AsRef<Path>>(path: P) -> jsonResult<FalconData> {
-    let file = File::open(path).unwrap();
-    let reader = BufReader::new(file);
-    let f = serde_json::from_reader(reader)?;
-    Ok(f)
+#[derive(Deserialize, Debug)]
+pub struct PlanetDanger {
+    pub planet: String,
+    pub day: u32,
 }
 
 pub fn get_routes() -> sqliteResult<Vec<(String,String,u32)>> {

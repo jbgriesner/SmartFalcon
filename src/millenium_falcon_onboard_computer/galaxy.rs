@@ -1,16 +1,15 @@
 use std::fmt;
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::collections::HashMap;
 
 /// Nothing special here: just simple stuff related to the Galaxy management
 ///     - creates a directed graph
 ///     - add "virtual" edge on planets to simulate "refule" and "wait" action
 
-pub fn from_routes<I>(routes: I, root_planet: String) -> Galaxy
+pub fn from_routes<I>(routes: I) -> Galaxy
 where
     I: IntoIterator<Item = (String, String, u32)>,
 {
     let mut galaxy = Galaxy::new();
-    galaxy.add_planet(root_planet);
     for (src, dst, weight) in routes {
         galaxy.add_route(src, dst, weight);
     }
@@ -25,6 +24,7 @@ pub struct Planet {
 impl Planet {
     pub fn new(name: String, id: u32) -> Planet {
         Planet { name: name, neighbors: vec![(id,1)] }
+        //Planet { name: name, neighbors: vec![] }
     }
 }
 
@@ -41,6 +41,7 @@ impl fmt::Debug for Planet {
 
 pub struct Galaxy {
     pub planets: HashMap<u32, Planet>,
+    pub id: HashMap<String,u32>,
     pub idx: u32,
 }
 
@@ -55,11 +56,12 @@ impl fmt::Debug for Galaxy {
 
 impl Galaxy {
     pub fn new() -> Galaxy {
-        Galaxy { idx: 0, planets: HashMap::new() }
+        Galaxy { idx: 0, id: HashMap::new(), planets: HashMap::new() }
     }
 
     fn add_planet(&mut self, name: String) -> u32 {
         let planet_id = self.idx;
+        self.id.insert(name.clone(), planet_id);
         self.planets.insert(planet_id, Planet::new(name, planet_id));
         self.idx += 1;
         planet_id

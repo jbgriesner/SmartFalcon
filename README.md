@@ -1,8 +1,8 @@
-# road_to_endor
+# what_are_the_odds
 
-This is home to _road_to_endor_, a simple minimalistic web application project that displays odds that Millenium Falcon reaches the Rebel forces before the Empire.
+This is home to _what_are_the_odds_, a simple minimalistic web application project that displays odds that Millenium Falcon reaches the Rebel forces before the Empire.
 The solution is deployed on my personal server.
-You can test my implementation online on griesner.net/road_to_endor
+You can test my implementation online on griesner.net/what_are_the_odds
 
 ## How to run the code
 
