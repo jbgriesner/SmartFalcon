@@ -31,7 +31,6 @@ impl Path {
 pub struct FalconState {
     pub planet: u32,
     pub cd: u32,
-    pub time: u32,
     pub path: Path,
     pub MAX_AUTONOMY: u32,
     pub seen: HashMap<(u32,u32),bool>,
@@ -48,7 +47,6 @@ impl FalconState {
         FalconState {
             planet: src_id,
             cd: cd,
-            time: 0,
             path: Path::new(),
             MAX_AUTONOMY: autonomy,
             seen,
@@ -58,7 +56,7 @@ impl FalconState {
 
 impl fmt::Debug for FalconState {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "\nFalcon just lands a new planet:\n\tvisiting planet: {:?}\n\tcd: {:?}\n\tat time: {:?}\n\tthrough path: {:?}\n", self.planet, self.cd, self.time, self.path)?;
+        write!(f, "\nFalcon just lands a new planet:\n\tvisiting planet: {:?}\n\tcd: {:?}\n\tthrough path: {:?}\n", self.planet, self.cd, self.path)?;
         Ok(())
     }
 }
@@ -76,37 +74,40 @@ fn display_seen(seen: &HashMap<(u32,u32),bool>) {
 pub fn generate_paths(galaxy: &Galaxy, src: String, dst: String, cd: u32, autonomy: u32) -> Vec<Path> {
     let mut all_paths: Vec<Path> = Vec::new();
 
-    fn visit(src: u32, dst: u32, galaxy: &Galaxy, state: &mut FalconState, all_paths: &mut Vec<Path>, last_distance: u32, refuel: bool, previous_autonomy: u32, autonomy: u32) {
-        state.time = state.time + last_distance;
-        state.seen.entry((src, state.time)).and_modify(|e| { *e = true });
-        state.path.add_planet_time(src, state.time);
+    fn visit(src: u32, dst: u32, galaxy: &Galaxy, state: &mut FalconState, all_paths: &mut Vec<Path>, refuel: bool, autonomy: u32, time: u32) {
+        state.seen.entry((src, time)).and_modify(|e| { *e = true });
+        state.path.add_planet_time(src, time);
+        state.planet = src;
 
         println!("{:?}", state);
 
         if src == dst {
             all_paths.push(state.path.clone());
         } else {
-            if state.time < state.cd {
+            if time < state.cd {
                 for (planet, distance) in galaxy.planets.get(&src).unwrap().neighbors.iter() {
 
                     println!("\tCandidate planet: {:?}", *planet);
                     println!("\t\tLocated at distance: {:?}", distance);
+                    println!("\t\tRemaining autonomy: {:?}", autonomy);
                     println!("\t\tNeighbors: {:?}", galaxy.planets.get(planet).unwrap().neighbors);
                     display_seen(&state.seen);
+                    println!("\t\tPath: {:?}", state.path);
                     println!("\t\tIs distance <= autonomy: {:?}", *distance <= autonomy);
 
-                    match state.seen.get(&(*planet,state.time+distance)) {
+                    match state.seen.get(&(*planet, time+distance)) {
                         None => {
                             println!("\t\tSeen or too far given the countdown!");
                             ()
                         },
                         Some(s) => {
-                            println!("\t\tSeen or not ?: {:?}", if *state.seen.get(&(*planet,state.time+distance)).unwrap() {"Seen"} else {"Not seen"});
-                            if !s && *distance <= autonomy {
+                            println!("\t\tSeen or not ?: {:?}", if *s {"Seen"} else {"Not seen"});
+                            if !s {
                                 if *planet == src {
-                                    visit(*planet, dst, galaxy, state, all_paths, *distance, true, autonomy, state.MAX_AUTONOMY);
-                                } else {
-                                    visit(*planet, dst, galaxy, state, all_paths, *distance, false, autonomy, autonomy - last_distance);
+                                    visit(*planet, dst, galaxy, state, all_paths, true, state.MAX_AUTONOMY, time+1);
+                                } else if *distance <= autonomy {
+                                    //println!("\t\t\t\t\tAAAAAAAAAAAA {:?}, {:?}", autonomy, distance);
+                                    visit(*planet, dst, galaxy, state, all_paths, false, autonomy-distance, time+distance);
                                 }
                             }
                         },
@@ -114,11 +115,9 @@ pub fn generate_paths(galaxy: &Galaxy, src: String, dst: String, cd: u32, autono
                 }
             }
         }
-
-        println!("\nBACKTRACK from:\n\tplanet: {:?}\n\tautonomy: {:?}\n\trefuel: {:?}\n\tcd: {:?}\n\tat time: {:?}\n\tthrough path: {:?}\n", state.planet, autonomy, refuel, state.cd, state.time, state.path);
-        state.time = state.time - last_distance;
+        println!("\nBACKTRACK from:\n\tplanet: {:?}\n\tautonomy: {:?}\n\trefuel: {:?}\n\tcd: {:?}\n\tat time: {:?}\n\tthrough path: {:?}\n", state.planet, autonomy, refuel, state.cd, time, state.path);
         state.path.planets.pop();
-        state.seen.entry((src,state.time)).and_modify(|e| { *e = false });
+        state.seen.entry((src, time)).and_modify(|e| { *e = false });
     };
 
     let src_id = galaxy.id.get(&src).unwrap();
@@ -127,7 +126,7 @@ pub fn generate_paths(galaxy: &Galaxy, src: String, dst: String, cd: u32, autono
     let mut state = FalconState::new(cd, galaxy, autonomy, *src_id);
 
     println!("\nSeen Planets are: {:?}", state.seen);
-    visit(*src_id, *dst_id, galaxy, &mut state, &mut all_paths, 0, false, 0, 6);
+    visit(*src_id, *dst_id, galaxy, &mut state, &mut all_paths, false, autonomy, 0);
 
     all_paths
 }
