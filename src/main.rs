@@ -11,22 +11,23 @@ fn main() {
     let falcon: connection::FalconData = connection::read_data("data/millenium-falcon.json").unwrap();
     println!("{:#?}", falcon);
 
-    let empire: connection::EmpireData = connection::read_data("data/empire.json").unwrap();
-    println!("{:#?}", empire);
-
     let routes = connection::get_routes().unwrap();
     println!("{:?}", routes);
 
     let mut galaxy = galaxy::from_routes(routes);
     println!("Routes in the galaxy looks like: {:?}", galaxy);
 
-    let paths = falcon::generate_paths(&galaxy, falcon.departure, falcon.arrival, empire.countdown, falcon.autonomy);
-    println!("ALL PATHS: {:?}", paths);
+    front::new().launch();
 
-    if let Some(best_path) = utils::get_best_path(&mut galaxy, paths, &empire.bounty_hunters) {
-        println!("BEST PATH: {:?} with odds: {:?}", best_path, 1.0_f64-best_path.odds);
-    } else {
-        println!("BEST PATH: {:?} with odds: {:?}", String::from(" "), 0);
-    }
-    //front::new().launch();
+//   let empire: connection::EmpireData = connection::read_data("data/empire.json").unwrap();
+//   println!("{:#?}", empire);
+//
+//   let paths = falcon::generate_paths(&galaxy, falcon.departure, falcon.arrival, empire.countdown, falcon.autonomy);
+//   println!("ALL PATHS: {:?}", paths);
+//
+//   if let Some(best_path) = utils::get_best_path(&mut galaxy, paths, &empire.bounty_hunters) {
+//       println!("BEST PATH: {:?} with odds: {:?}%", best_path, (1.0_f64-best_path.odds)*100.0_f64);
+//   } else {
+//       println!("BEST PATH: {:?} with odds: {:?}%", String::from(" "), 0);
+//   }
 }
