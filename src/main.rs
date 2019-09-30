@@ -1,11 +1,11 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 #[macro_use] extern crate rocket;
 
-mod millenium_falcon_onboard_computer;
 mod c_3po;
+mod millenium_falcon_onboard_computer;
 
-use crate::millenium_falcon_onboard_computer::{connection,galaxy,falcon};
 use crate::c_3po::front;
+use crate::millenium_falcon_onboard_computer::{connection,galaxy,falcon,utils};
 
 fn main() {
     let falcon: connection::FalconData = connection::read_data("data/millenium-falcon.json").unwrap();
@@ -17,10 +17,16 @@ fn main() {
     let routes = connection::get_routes().unwrap();
     println!("{:?}", routes);
 
-    let galaxy = galaxy::from_routes(routes);
+    let mut galaxy = galaxy::from_routes(routes);
     println!("Routes in the galaxy looks like: {:?}", galaxy);
 
     let paths = falcon::generate_paths(&galaxy, falcon.departure, falcon.arrival, empire.countdown, falcon.autonomy);
     println!("ALL PATHS: {:?}", paths);
+
+    if let Some(best_path) = utils::get_best_path(&mut galaxy, paths, &empire.bounty_hunters) {
+        println!("BEST PATH: {:?} with odds: {:?}", best_path, 1.0_f64-best_path.odds);
+    } else {
+        println!("BEST PATH: {:?} with odds: {:?}", String::from(" "), 0);
+    }
     //front::new().launch();
 }

@@ -24,7 +24,6 @@ pub struct Planet {
 impl Planet {
     pub fn new(name: String, id: u32) -> Planet {
         Planet { name: name, neighbors: vec![(id,1)] }
-        //Planet { name: name, neighbors: vec![] }
     }
 }
 
@@ -67,7 +66,7 @@ impl Galaxy {
         planet_id
     }
 
-    fn get_planet_id(&mut self, planet_name: String) -> u32 {
+    pub fn get_planet_id(&mut self, planet_name: String) -> u32 {
         for (id, planet) in self.planets.iter() {
             if planet.name == planet_name {
                 return *id

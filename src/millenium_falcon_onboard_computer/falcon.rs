@@ -1,5 +1,6 @@
 use std::fmt;
 use std::collections::HashMap;
+use crate::millenium_falcon_onboard_computer::{connection,utils};
 use crate::millenium_falcon_onboard_computer::galaxy::Galaxy;
 
 #[derive(Default,Clone)]
@@ -20,6 +21,16 @@ impl fmt::Debug for Path {
 impl Path {
     fn new() -> Path {
         Path { planets: Vec::new(), ..Default::default()}
+    }
+
+    pub fn compute_odds(&mut self, bounty_hunters: &Vec<connection::PlanetDanger>, galaxy: &mut Galaxy) {
+        let mut count = 0;
+        for planet_danger in bounty_hunters {
+            if self.planets.contains(&(galaxy.get_planet_id(planet_danger.planet.clone()), planet_danger.day)) {
+                count += 1;
+            }
+        }
+        self.odds = utils::odds_from_k(count)
     }
 
     fn add_planet_time(&mut self, planet_id: u32, time: u32) {
