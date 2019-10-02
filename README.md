@@ -1,8 +1,7 @@
 # what_are_the_odds
 
 This is home to _what_are_the_odds_, a simple minimalistic web application project that displays the odds that Millenium Falcon reaches the Rebel forces before the Empire.
-The solution is deployed on my personal server.
-You can test my implementation online on griesner.net:8000
+You can test my implementation online on [my personal server](http://79.137.74.197:8000/) 
 
 ## Getting Started
 
@@ -23,7 +22,7 @@ rustup default nightly
 
 ### Architecture
 
-- The `/data` folder contains the input json data files and th `universe.db` sqlite db file.
+- The `/data` folder contains the input json data files and the `universe.db` sqlite db file.
 - The front-end corresponds to a single web page. It is contained in the `static` folder and served by Rocket on the main route `/ `. All the routes are in the `c_3po` folder.
 - The back-end is inside the `/src/millenium_falcon_onboard_computer` folder. Its mainly managed by Rocket framework. I chose Rocket because it offers a central point to manage front and back in a simple way. It takes in charge the routing, the pre-processing and the post-processing of user queries.
 
