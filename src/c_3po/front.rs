@@ -1,4 +1,4 @@
-use crate::c_3po::{static_files,get,submit};
+use crate::c_3po::{get, static_files, submit};
 use rocket_contrib::json::JsonValue;
 
 #[catch(404)]
@@ -14,12 +14,8 @@ fn not_found() -> JsonValue {
 pub fn new() -> rocket::Rocket {
     rocket::ignite()
         .mount(
-            "/", 
-            routes![
-                get::index,
-                static_files::file,
-                submit::submit,
-            ],
+            "/",
+            routes![get::index, static_files::file, submit::submit,],
         )
         .register(catchers![not_found])
 }

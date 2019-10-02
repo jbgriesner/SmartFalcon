@@ -1,5 +1,5 @@
-use std::io;
 use rocket::response::NamedFile;
+use std::io;
 
 /// Just get he index.html
 #[get("/")]

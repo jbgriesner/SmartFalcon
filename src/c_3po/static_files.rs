@@ -1,5 +1,5 @@
-use std::path::{Path,PathBuf};
 use rocket::response::NamedFile;
+use std::path::{Path, PathBuf};
 
 /// Just get static_files
 #[get("/static/<file..>")]

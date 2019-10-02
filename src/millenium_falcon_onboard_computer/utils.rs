@@ -1,19 +1,23 @@
-use crate::millenium_falcon_onboard_computer::{connection,galaxy::Galaxy,falcon::Path};
+use crate::millenium_falcon_onboard_computer::{connection, falcon::Path, galaxy::Galaxy};
 
 /// Just utils functions here
 
 pub fn odds_from_k(count: u32) -> f64 {
     if count == 0 {
-        return 0.0_f64
+        return 0.0_f64;
     }
     let mut odds = 0.1_f64;
-    for k in 2..count+1 {
-        odds += 9_u32.pow(k-1) as f64 / 10_u32.pow(k) as f64;
+    for k in 2..count + 1 {
+        odds += 9_u32.pow(k - 1) as f64 / 10_u32.pow(k) as f64;
     }
     odds
 }
 
-pub fn get_best_path(galaxy: &mut Galaxy, mut paths: Vec<Path>, bounty_hunters: &Vec<connection::PlanetDanger>) -> Option<String> {
+pub fn get_best_path(
+    galaxy: &mut Galaxy,
+    mut paths: Vec<Path>,
+    bounty_hunters: &Vec<connection::PlanetDanger>,
+) -> Option<String> {
     for path in &mut paths {
         path.compute_odds(bounty_hunters, galaxy);
     }

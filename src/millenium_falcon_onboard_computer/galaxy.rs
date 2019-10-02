@@ -1,5 +1,5 @@
-use std::fmt;
 use std::collections::HashMap;
+use std::fmt;
 
 /// Nothing special here: just simple stuff related to the Galaxy management
 ///     - creates a directed graph
@@ -18,12 +18,15 @@ where
 
 pub struct Planet {
     pub name: String,
-    pub neighbors: Vec<(u32,u32)>,
+    pub neighbors: Vec<(u32, u32)>,
 }
 
 impl Planet {
     pub fn new(name: String, id: u32) -> Planet {
-        Planet { name: name, neighbors: vec![(id,1)] }
+        Planet {
+            name: name,
+            neighbors: vec![(id, 1)],
+        }
     }
 }
 
@@ -40,13 +43,13 @@ impl fmt::Debug for Planet {
 
 pub struct Galaxy {
     pub planets: HashMap<u32, Planet>,
-    pub id: HashMap<String,u32>,
+    pub id: HashMap<String, u32>,
     pub idx: u32,
 }
 
 impl fmt::Debug for Galaxy {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        for (id,pl) in self.planets.iter() {
+        for (id, pl) in self.planets.iter() {
             write!(f, "\n{:?}:{:?}", id, pl)?;
         }
         Ok(())
@@ -55,7 +58,11 @@ impl fmt::Debug for Galaxy {
 
 impl Galaxy {
     pub fn new() -> Galaxy {
-        Galaxy { idx: 0, id: HashMap::new(), planets: HashMap::new() }
+        Galaxy {
+            idx: 0,
+            id: HashMap::new(),
+            planets: HashMap::new(),
+        }
     }
 
     fn add_planet(&mut self, name: String) -> u32 {
@@ -69,14 +76,16 @@ impl Galaxy {
     pub fn get_planet_id(&mut self, planet_name: String) -> u32 {
         for (id, planet) in self.planets.iter() {
             if planet.name == planet_name {
-                return *id
+                return *id;
             }
         }
         self.add_planet(planet_name)
     }
 
     fn add_edge(&mut self, src_id: u32, dst_id: u32, weight: u32) {
-        self.planets.entry(src_id).and_modify(|p| { p.neighbors.push((dst_id,weight)) });
+        self.planets
+            .entry(src_id)
+            .and_modify(|p| p.neighbors.push((dst_id, weight)));
     }
 
     fn add_route(&mut self, src: String, dst: String, weight: u32) {

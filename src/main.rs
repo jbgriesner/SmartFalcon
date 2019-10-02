@@ -4,8 +4,10 @@
 extern crate log;
 extern crate simple_logger;
 
-#[macro_use] extern crate rocket;
-#[macro_use] extern crate rocket_contrib;
+#[macro_use]
+extern crate rocket;
+#[macro_use]
+extern crate rocket_contrib;
 
 use log::Level;
 
