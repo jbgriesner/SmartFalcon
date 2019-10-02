@@ -1,28 +1,26 @@
-use rocket::Data;
-use rocket::http::ContentType;
 use crate::millenium_falcon_onboard_computer::{connection,galaxy,falcon,utils};
-use rocket_contrib::json::{Json, JsonValue};
+use rocket_contrib::json::Json;
 
+/// Method called in static/main.js to compute the odds thanks to the back-end
 #[post("/submit", format = "application/json", data = "<empire_json>")]
 pub fn submit(empire_json: Json<connection::EmpireData>) -> String {
     let falcon: connection::FalconData = connection::read_data("data/millenium-falcon.json").unwrap();
-    println!("{:#?}", falcon);
+    info!("{:#?}", falcon);
 
     let routes = connection::get_routes().unwrap();
-    println!("{:?}", routes);
+    info!("{:?}", routes);
 
     let mut galaxy = galaxy::from_routes(routes);
-    println!("Routes in the galaxy looks like: {:?}", galaxy);
-
-    //let empire: connection::EmpireData = connection::read_data("data/empire.json").unwrap();
-    //println!("{:#?}", empire);
+    info!("Routes in the galaxy looks like: {:?}", galaxy);
 
     let paths = falcon::generate_paths(&galaxy, falcon.departure, falcon.arrival, empire_json.countdown, falcon.autonomy);
-    println!("ALL PATHS: {:?}", paths);
+    info!("ALL PATHS: {:?}", paths);
 
     if let Some(best_path) = utils::get_best_path(&mut galaxy, paths, &empire_json.bounty_hunters) {
-        format!("BEST PATH: {:?} with odds: {:?}%", best_path, (1.0_f64-best_path.odds)*100.0_f64)
+        //format!("BEST PATH: {:?} with odds: {:?}%", best_path, (1.0_f64-best_path.odds)*100.0_f64)
+        best_path
     } else {
-        format!("BEST PATH: {:?} with odds: {:?}%", String::from(" "), 0)
+        //format!("BEST PATH: {:?} with odds: {:?}%", String::from(" "), 0)
+        format!("The odds are O%, it means that no path is possible in time.")
     }
 }

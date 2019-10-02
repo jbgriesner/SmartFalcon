@@ -3,12 +3,15 @@ use std::collections::HashMap;
 use crate::millenium_falcon_onboard_computer::{connection,utils};
 use crate::millenium_falcon_onboard_computer::galaxy::Galaxy;
 
+/// Store odds, planets and time corresponding to path explored in the galaxy
+/// 'planets' Vec items are pairs of planet id and visit time
 #[derive(Default,Clone)]
 pub struct Path {
     pub planets: Vec<(u32,u32)>,
     pub odds: f64,
 }
 
+/// Just implement Debug for dev purpose
 impl fmt::Debug for Path {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for (pl,time) in self.planets.iter() {
@@ -36,8 +39,18 @@ impl Path {
     fn add_planet_time(&mut self, planet_id: u32, time: u32) {
         self.planets.push((planet_id, time));
     }
+
+    pub fn display(&self, galaxy: &Galaxy) -> String {
+        let mut result = format!("The odds are {:?}%. The path corresponding is: ", (1.0_f64-self.odds)*100.0_f64);
+        for (pl,_) in self.planets.iter() {
+            result.push_str(&format!("{:?} -> ", galaxy.planets.get(&pl).unwrap().name.clone()));
+        }
+        result.truncate(result.len() - 4);
+        result
+    }
 }
 
+/// Reference passed during exploration of different paths in the galaxy
 #[derive(Clone)]
 pub struct FalconState {
     pub planet: u32,
@@ -79,9 +92,12 @@ fn display_seen(seen: &HashMap<(u32,u32),bool>) {
             seens.push_str(&format!("{:?}[{:?}], ", i, j));
         }
     }
-    println!("\t\tSeen Planets are: {:?}", seens);
+    debug!("\t\tSeen Planets are: {:?}", seens);
 }
 
+/// Most important method
+/// Visit the galaxy with a DFS based method with backtrack
+/// It takes into account of autonomy, jump distances and times
 pub fn generate_paths(galaxy: &Galaxy, src: String, dst: String, cd: u32, autonomy: u32) -> Vec<Path> {
     let mut all_paths: Vec<Path> = Vec::new();
 
@@ -90,7 +106,7 @@ pub fn generate_paths(galaxy: &Galaxy, src: String, dst: String, cd: u32, autono
         state.path.add_planet_time(src, time);
         state.planet = src;
 
-        println!("{:?}", state);
+        debug!("{:?}", state);
 
         if src == dst {
             all_paths.push(state.path.clone());
@@ -98,26 +114,25 @@ pub fn generate_paths(galaxy: &Galaxy, src: String, dst: String, cd: u32, autono
             if time < state.cd {
                 for (planet, distance) in galaxy.planets.get(&src).unwrap().neighbors.iter() {
 
-                    println!("\tCandidate planet: {:?}", *planet);
-                    println!("\t\tLocated at distance: {:?}", distance);
-                    println!("\t\tRemaining autonomy: {:?}", autonomy);
-                    println!("\t\tNeighbors: {:?}", galaxy.planets.get(planet).unwrap().neighbors);
+                    debug!("\tCandidate planet: {:?}", *planet);
+                    debug!("\t\tLocated at distance: {:?}", distance);
+                    debug!("\t\tRemaining autonomy: {:?}", autonomy);
+                    debug!("\t\tNeighbors: {:?}", galaxy.planets.get(planet).unwrap().neighbors);
                     display_seen(&state.seen);
-                    println!("\t\tPath: {:?}", state.path);
-                    println!("\t\tIs distance <= autonomy: {:?}", *distance <= autonomy);
+                    debug!("\t\tPath: {:?}", state.path);
+                    debug!("\t\tIs distance <= autonomy: {:?}", *distance <= autonomy);
 
                     match state.seen.get(&(*planet, time+distance)) {
                         None => {
-                            println!("\t\tSeen or too far given the countdown!");
+                            debug!("\t\tSeen or too far given the countdown!");
                             ()
                         },
                         Some(s) => {
-                            println!("\t\tSeen or not ?: {:?}", if *s {"Seen"} else {"Not seen"});
+                            debug!("\t\tSeen or not ?: {:?}", if *s {"Seen"} else {"Not seen"});
                             if !s {
                                 if *planet == src {
                                     visit(*planet, dst, galaxy, state, all_paths, true, state.MAX_AUTONOMY, time+1);
                                 } else if *distance <= autonomy {
-                                    //println!("\t\t\t\t\tAAAAAAAAAAAA {:?}, {:?}", autonomy, distance);
                                     visit(*planet, dst, galaxy, state, all_paths, false, autonomy-distance, time+distance);
                                 }
                             }
@@ -126,7 +141,7 @@ pub fn generate_paths(galaxy: &Galaxy, src: String, dst: String, cd: u32, autono
                 }
             }
         }
-        println!("\nBACKTRACK from:\n\tplanet: {:?}\n\tautonomy: {:?}\n\trefuel: {:?}\n\tcd: {:?}\n\tat time: {:?}\n\tthrough path: {:?}\n", state.planet, autonomy, refuel, state.cd, time, state.path);
+        debug!("\nBACKTRACK from:\n\tplanet: {:?}\n\tautonomy: {:?}\n\trefuel: {:?}\n\tcd: {:?}\n\tat time: {:?}\n\tthrough path: {:?}\n", state.planet, autonomy, refuel, state.cd, time, state.path);
         state.path.planets.pop();
         state.seen.entry((src, time)).and_modify(|e| { *e = false });
     };
@@ -136,7 +151,7 @@ pub fn generate_paths(galaxy: &Galaxy, src: String, dst: String, cd: u32, autono
 
     let mut state = FalconState::new(cd, galaxy, autonomy, *src_id);
 
-    println!("\nSeen Planets are: {:?}", state.seen);
+    debug!("\nSeen Planets are: {:?}", state.seen);
     visit(*src_id, *dst_id, galaxy, &mut state, &mut all_paths, false, autonomy, 0);
 
     all_paths

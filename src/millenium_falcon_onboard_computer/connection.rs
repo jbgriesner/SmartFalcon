@@ -8,6 +8,7 @@ use serde_json::Result as jsonResult;
 use rusqlite::{Connection,NO_PARAMS};
 use rusqlite::Result as sqliteResult;
 
+/// Just read and convert json files into jsonResult
 pub fn read_data<P, D>(path: P) -> jsonResult<D>
 where
     P: AsRef<Path>,
@@ -19,12 +20,14 @@ where
     Ok(f)
 }
 
+/// Store empire.json data
 #[derive(Deserialize, Debug)]
 pub struct EmpireData {
     pub countdown: u32,
     pub bounty_hunters: Vec<PlanetDanger>,
 }
 
+/// Store falcon.json data
 #[derive(Deserialize, Debug)]
 pub struct FalconData {
     pub autonomy: u32,
@@ -39,6 +42,7 @@ pub struct PlanetDanger {
     pub day: u32,
 }
 
+/// Get all edges between planets of the galaxy
 pub fn get_routes() -> sqliteResult<Vec<(String,String,u32)>> {
     // We assume the sqlite database will always be in "data/universe.db" file, which "should have been" parametrized
     let conn = Connection::open("data/universe.db").unwrap();

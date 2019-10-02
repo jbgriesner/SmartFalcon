@@ -1,10 +1,12 @@
 # what_are_the_odds
 
-This is home to _what_are_the_odds_, a simple minimalistic web application project that displays odds that Millenium Falcon reaches the Rebel forces before the Empire.
+This is home to _what_are_the_odds_, a simple minimalistic web application project that displays the odds that Millenium Falcon reaches the Rebel forces before the Empire.
 The solution is deployed on my personal server.
-You can test my implementation online on griesner.net/what_are_the_odds
+You can test my implementation online on griesner.net:8000
 
-## How to run the code
+## Install
+
+###
 
 ### Basic assumption
 - universe.db well formed

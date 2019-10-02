@@ -1,10 +1,5 @@
 use crate::c_3po::{static_files,get,submit};
-
-use std::sync::Mutex;
-use std::collections::HashMap;
-
-use rocket::State;
-use rocket_contrib::json::{Json, JsonValue};
+use rocket_contrib::json::JsonValue;
 
 #[catch(404)]
 fn not_found() -> JsonValue {
@@ -14,6 +9,8 @@ fn not_found() -> JsonValue {
     })
 }
 
+/// Mount 3 routes on /
+/// Attach not_found handler to handle errors
 pub fn new() -> rocket::Rocket {
     rocket::ignite()
         .mount(

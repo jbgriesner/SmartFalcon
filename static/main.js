@@ -28,8 +28,6 @@ function readFileContent(file) {
 
 form.addEventListener('submit', e => {
         e.preventDefault()
-        //alert('json = \n' + JSON.stringify(json));
-
         var xhr = new XMLHttpRequest();
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-Type", "application/json");
@@ -40,6 +38,5 @@ form.addEventListener('submit', e => {
         }
         };
         xhr.send(empire_json);
-
 }, false);
 
