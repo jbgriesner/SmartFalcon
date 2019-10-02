@@ -8,17 +8,20 @@ use crate::c_3po::front;
 use crate::millenium_falcon_onboard_computer::{connection,galaxy,falcon,utils};
 
 fn main() {
-    let falcon: connection::FalconData = connection::read_data("data/millenium-falcon.json").unwrap();
-    println!("{:#?}", falcon);
-
-    let routes = connection::get_routes().unwrap();
-    println!("{:?}", routes);
-
-    let mut galaxy = galaxy::from_routes(routes);
-    println!("Routes in the galaxy looks like: {:?}", galaxy);
-
     front::new().launch();
 
+
+
+
+//   let falcon: connection::FalconData = connection::read_data("data/millenium-falcon.json").unwrap();
+//   println!("{:#?}", falcon);
+//
+//   let routes = connection::get_routes().unwrap();
+//   println!("{:?}", routes);
+//
+//   let mut galaxy = galaxy::from_routes(routes);
+//   println!("Routes in the galaxy looks like: {:?}", galaxy);
+//
 //   let empire: connection::EmpireData = connection::read_data("data/empire.json").unwrap();
 //   println!("{:#?}", empire);
 //
