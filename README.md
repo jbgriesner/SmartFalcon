@@ -21,38 +21,18 @@ rustup default nightly
  ROCKET_ENV=production cargo run
 ```
 
-### Architecture and Assumptions
+### Architecture
 
-The `/data` folder contains the input json data files and th `universe.db` sqlite db file.
-The front-end corresponds to a single web page. It is contained in the `static` folder and served by Rocket on the main route `/ `. All the routes are in the `c_3po` folder.
-The back-end is inside the `/src/millenium_falcon_onboard_computer` folder.
-
-I have made the following assumptions to limit data validation and thus code faster:
-- `data/universe.db` well formed
+- The `/data` folder contains the input json data files and th `universe.db` sqlite db file.
+- The front-end corresponds to a single web page. It is contained in the `static` folder and served by Rocket on the main route `/ `. All the routes are in the `c_3po` folder.
+- The back-end is inside the `/src/millenium_falcon_onboard_computer` folder. Its mainly managed by Rocket framework. I chose Rocket because it offers a central point to manage front and back in a simple way. It takes in charge the routing, the pre-processing and the post-processing of user queries.
 
 ## Algorithmic solution
 
-To compute the odds for the Falcon to save Endor, I propose a two-steps
-Finding the "best path" from departure planet to source planet cannot be done with "standard" algorithms (DFS, BFS, A*, Bellmann...) because of the autonomy constraints.
-1/ Generate all paths
-
-why DFS ?
-allows to make the computations once and then everything is ok for the uploading file
-
-Complexity analysis: enormous!
-
-## Why Rocket & Technical choices
-
-Rocket framework offers a central point to manage front and back in a simple way.
-It takes in charge the routing, the pre-processing and the post-processing of user queries.
+To compute the odds for the Falcon to save Endor, I propose a two-steps approach. During the first step I generate all possible paths from departure to arrival subject to autonomy and countdown constraints. During the second step I compute the odds for each valid path and I select the best one.
+Finding the "best path" from departure planet to source planet cannot be done with "standard" algorithms (DFS, BFS, A*, Bellmann...) because of the autonomy constraints. I implemented a variant of DFS with "backtrack": when countdown is reached or autonomy null the Falcon backtracks.
 
 ## Personal notes
 
 From a personal point of view I really enjoyed to work on this project for the following reasons:
--
--
-- it was the first time I used Rocket. I was only used to iron, actix...
-
-Of course my implementation leaves room for many improvements.
-Optimization
-- I think tests are 100% necessary
+Of course my implementation leaves room for many improvements. These improvements include unit and functional tests, web page customization, more abstractions...
