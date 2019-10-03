@@ -23,8 +23,8 @@ rustup default nightly
 ### Architecture
 
 - The `/data` folder contains the input json data files and the `universe.db` sqlite db file.
-- The front-end corresponds to a single web page. It is contained in the `static` folder and served by Rocket on the main route `/ `. All the routes are in the `c_3po` folder.
-- The back-end is inside the `/src/millenium_falcon_onboard_computer` folder. Its mainly managed by Rocket framework. I chose Rocket because it offers a central point to manage front and back in a simple way. It takes in charge the routing, the pre-processing and the post-processing of user queries.
+- The front-end corresponds to a single web page. It is contained in the `/static` folder and served by Rocket on the main route `/`. All the routes are in the `/src/c_3po` folder.
+- The back-end is inside the `/src/millenium_falcon_onboard_computer` folder. It's mainly managed by the Rocket framework. I chose Rocket because it offers a central point to manage front and back in a simple way. It takes in charge the routing, the pre-processing and the post-processing of user queries.
 
 ## Algorithmic solution
 
@@ -33,5 +33,5 @@ Finding the "best path" from departure planet to source planet cannot be done wi
 
 ## Personal notes
 
-From a personal point of view I really enjoyed to work on this project for the following reasons:
-Of course my implementation leaves room for many improvements. These improvements include unit and functional tests, web page customization, more abstractions...
+From a personal point of view I really enjoyed to work on this project. The problem to solve was interesting to investigate. I specifically liked to implement all the graph traversal algorithm.
+Of course my implementation leaves room for many improvements. These improvements include unit and functional tests, complexity reduction, web page customization, more abstractions...

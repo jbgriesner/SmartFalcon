@@ -1,7 +1,6 @@
 const url = '/submit';
 const form = document.querySelector('form');
 const odds = document.getElementById("odds");
-const Http = new XMLHttpRequest();
 
 document.getElementById('empire').addEventListener('change', getFile)
 
