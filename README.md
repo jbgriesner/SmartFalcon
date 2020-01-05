@@ -1,7 +1,6 @@
-# what_are_the_odds
+# Smart Falcon
 
-This is home to _what_are_the_odds_, a simple minimalistic web application project that displays the odds that Millenium Falcon reaches the Rebel forces before the Empire.
-You can test my implementation online on [my personal server](http://79.137.74.197:8000/) 
+This is home to _Smart Falcon_, a simple minimalistic web application project that displays the odds that Millenium Falcon reaches the Rebel forces before the Empire.
 
 ## Getting Started
 
@@ -30,8 +29,3 @@ rustup default nightly
 
 To compute the odds for the Falcon to save Endor, I propose a two-steps approach. During the first step I generate all possible paths from departure to arrival subject to autonomy and countdown constraints. During the second step I compute the odds for each valid path and I select the best one.
 Finding the "best path" from departure planet to source planet cannot be done with "standard" algorithms (DFS, BFS, A*, Bellmann...) because of the autonomy constraints. I implemented a variant of DFS with "backtrack": when countdown is reached or autonomy null the Falcon backtracks.
-
-## Personal notes
-
-From a personal point of view I really enjoyed to work on this project. The problem to solve was interesting to investigate. I specifically liked to implement all the graph traversal algorithm.
-Of course my implementation leaves room for many improvements. These improvements include unit and functional tests, complexity reduction, web page customization, more abstractions...
